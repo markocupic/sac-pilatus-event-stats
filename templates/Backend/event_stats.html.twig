@@ -1,0 +1,34 @@
+{% extends "@Contao/be_main" %}
+
+{% block main_content %}
+    <div class="tl_listing_container sac-pilatus-event-stat--listing-container">
+        {# Start: Ausgeschriebene Touren (ab FS3) #}
+        <h3>Ausgeschriebene Touren (ab FS3):</h3>
+        <table class="sac-pilatus-event-stat--data-table">
+            <tr>
+                <th>&nbsp;</th>
+                {% for time_period in time_periods %}
+                    <th>{{ time_period.getYear() }}</th>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Total</th>
+                {% for data in _01_advertised_tours__total %}
+                    <th>{{ data.getData() }}</th>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Mit Bergführer</th>
+                {% for data in _01_advertised_tours__with_mountain_guide %}
+                    <th>{{ data.getData() }}</th>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Ohne Bergführer</th>
+                {% for data in _01_advertised_tours__without_mountain_guide %}
+                    <th>{{ data.getData() }}</th>
+                {% endfor %}
+            </tr>
+        </table>
+    </div>
+{% endblock %}

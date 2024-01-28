@@ -1,0 +1,13 @@
+.sac-pilatus-event-stat--listing-container {
+
+
+}
+
+.sac-pilatus-event-stat--data-table {
+    margin: 10px 0 8px 0;
+
+    & th {
+        padding: 8px;
+        border: 1px solid #ccc;
+    }
+}
