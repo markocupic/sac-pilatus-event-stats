@@ -48,6 +48,7 @@ class EventStatsController extends AbstractBackendController
         return $this->render(
             '@MarkocupicSacPilatusEventStats/Backend/event_stats.html.twig',
             [
+                'headline' => 'SAC Pilatus Event Statistik',
                 'time_periods' => $timePeriods,
                 // 01
                 '_01_advertised_tours__total' => $this->_01advertisedTours->getTotal($timePeriods),
