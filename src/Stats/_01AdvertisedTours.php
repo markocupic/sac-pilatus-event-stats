@@ -17,6 +17,7 @@ namespace Markocupic\SacPilatusEventStats\Stats;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use Markocupic\SacEventToolBundle\Config\EventMountainGuide;
+use Markocupic\SacEventToolBundle\Config\EventType;
 use Markocupic\SacPilatusEventStats\Data\DataItem;
 use Markocupic\SacPilatusEventStats\TimePeriod\TimePeriod;
 
@@ -40,8 +41,9 @@ readonly class _01AdvertisedTours
 
         foreach ($timePeriods as $timePeriod) {
             $rows = $this->connection->fetchAllAssociative(
-                'SELECT id FROM tl_calendar_events WHERE startDate >= ? AND startTime <= ? AND published = ?',
+                'SELECT id FROM tl_calendar_events WHERE eventType = ? AND startDate >= ? AND startTime <= ? AND published = ?',
                 [
+                    EventType::TOUR,
                     $timePeriod->getStartTime(),
                     $timePeriod->getEndTime(),
                     '1',
@@ -73,8 +75,9 @@ readonly class _01AdvertisedTours
 
         foreach ($timePeriods as $timePeriod) {
             $rows = $this->connection->fetchAllAssociative(
-                'SELECT id FROM tl_calendar_events WHERE startDate >= ? AND startTime <= ? AND published = ? AND mountainguide != ?',
+                'SELECT id FROM tl_calendar_events WHERE eventType = ? AND startDate >= ? AND startTime <= ? AND published = ? AND mountainguide != ?',
                 [
+                    EventType::TOUR,
                     $timePeriod->getStartTime(),
                     $timePeriod->getEndTime(),
                     '1',
@@ -107,8 +110,9 @@ readonly class _01AdvertisedTours
 
         foreach ($timePeriods as $timePeriod) {
             $rows = $this->connection->fetchAllAssociative(
-                'SELECT id FROM tl_calendar_events WHERE startDate >= ? AND startTime <= ? AND published = ? AND mountainguide = ?',
+                'SELECT id FROM tl_calendar_events WHERE eventType = ? AND startDate >= ? AND startTime <= ? AND published = ? AND mountainguide = ?',
                 [
+                    EventType::TOUR,
                     $timePeriod->getStartTime(),
                     $timePeriod->getEndTime(),
                     '1',
