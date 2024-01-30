@@ -35,26 +35,27 @@ readonly class _01AdvertisedTours
      *
      * @return array<DataItem>
      */
-    public function getTotal(array $timePeriods): array
+    public function countTours(array $timePeriods): array
     {
         $data = [];
+        $qb = $this->connection->createQueryBuilder();
 
         foreach ($timePeriods as $timePeriod) {
-            $rows = $this->connection->fetchAllAssociative(
-                'SELECT id FROM tl_calendar_events WHERE eventType = ? AND startDate >= ? AND startTime <= ? AND published = ?',
-                [
+            $qb->select('COUNT(id)')
+                ->from('tl_calendar_events', 't')
+                ->where('t.eventType = ?')
+                ->andWhere('t.startDate >= ?')
+                ->andWhere('t.startDate <= ?')
+                ->andWhere('t.published = ?')
+                ->setParameters([
                     EventType::TOUR,
                     $timePeriod->getStartTime(),
                     $timePeriod->getEndTime(),
                     '1',
-                ],
-            );
+                ])
+            ;
 
-            $count = 0;
-
-            if ($rows) {
-                $count = \count($rows);
-            }
+            $count = $qb->fetchOne();
 
             $data[] = new DataItem($timePeriod, $count);
         }
@@ -69,62 +70,33 @@ readonly class _01AdvertisedTours
      *
      * @return array<DataItem>
      */
-    public function getWithMountainGuide(array $timePeriods): array
+    public function countToursByMountainGuideType(array $timePeriods, int $mountainGuideType): array
     {
-        $data = [];
-
-        foreach ($timePeriods as $timePeriod) {
-            $rows = $this->connection->fetchAllAssociative(
-                'SELECT id FROM tl_calendar_events WHERE eventType = ? AND startDate >= ? AND startTime <= ? AND published = ? AND mountainguide != ?',
-                [
-                    EventType::TOUR,
-                    $timePeriod->getStartTime(),
-                    $timePeriod->getEndTime(),
-                    '1',
-                    EventMountainGuide::NO_MOUNTAIN_GUIDE,
-                ],
-            );
-
-            $count = 0;
-
-            if ($rows) {
-                $count = \count($rows);
-            }
-
-            $data[] = new DataItem($timePeriod, $count);
+        if (!\in_array($mountainGuideType, EventMountainGuide::ALL, true)) {
+            throw new \Exception(sprintf('Invalid parameter "$mountainGuideType". Should be either "%d" or "%d".', EventMountainGuide::WITH_MOUNTAIN_GUIDE, EventMountainGuide::WITH_MOUNTAIN_GUIDE_OFFER));
         }
 
-        return $data;
-    }
-
-    /**
-     * @param array<TimePeriod> $timePeriods
-     *
-     * @throws Exception
-     *
-     * @return array<DataItem>
-     */
-    public function getWithoutMountainGuide(array $timePeriods): array
-    {
         $data = [];
+        $qb = $this->connection->createQueryBuilder();
 
         foreach ($timePeriods as $timePeriod) {
-            $rows = $this->connection->fetchAllAssociative(
-                'SELECT id FROM tl_calendar_events WHERE eventType = ? AND startDate >= ? AND startTime <= ? AND published = ? AND mountainguide = ?',
-                [
+            $qb->select('COUNT(id)')
+                ->from('tl_calendar_events', 't')
+                ->where('t.eventType = ?')
+                ->andWhere('t.startDate >= ?')
+                ->andWhere('t.startDate <= ?')
+                ->andWhere('t.published = ?')
+                ->andWhere('t.mountainguide = ?')
+                ->setParameters([
                     EventType::TOUR,
                     $timePeriod->getStartTime(),
                     $timePeriod->getEndTime(),
                     '1',
-                    EventMountainGuide::NO_MOUNTAIN_GUIDE,
-                ],
-            );
+                    $mountainGuideType,
+                ])
+            ;
 
-            $count = 0;
-
-            if ($rows) {
-                $count = \count($rows);
-            }
+            $count = $qb->fetchOne();
 
             $data[] = new DataItem($timePeriod, $count);
         }

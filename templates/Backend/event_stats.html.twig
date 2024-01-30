@@ -8,12 +8,18 @@
             <tr>
                 <th>&nbsp;</th>
                 {% for time_period in time_periods %}
-                    <th>{{ time_period.getYear() }}</th>
+                    <th>{{ time_period.getFormattedStartTime('Y') }}</th>
                 {% endfor %}
             </tr>
             <tr>
                 <th>Total</th>
                 {% for data in _01_advertised_tours__total %}
+                    <th>{{ data.getData() }}</th>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Mit Bergführer Angebot</th>
+                {% for data in _01_advertised_tours__with_mountain_guide_offer %}
                     <th>{{ data.getData() }}</th>
                 {% endfor %}
             </tr>

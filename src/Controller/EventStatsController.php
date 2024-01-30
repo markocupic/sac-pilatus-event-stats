@@ -16,6 +16,7 @@ namespace Markocupic\SacPilatusEventStats\Controller;
 
 use Contao\CoreBundle\Controller\AbstractBackendController;
 use Doctrine\DBAL\Exception;
+use Markocupic\SacEventToolBundle\Config\EventMountainGuide;
 use Markocupic\SacPilatusEventStats\Stats\_01AdvertisedTours;
 use Markocupic\SacPilatusEventStats\TimePeriod\TimePeriod;
 use Symfony\Component\HttpFoundation\Response;
@@ -40,9 +41,9 @@ class EventStatsController extends AbstractBackendController
         $currentYear = (int) date('Y', time());
 
         $timePeriods = [
-            new TimePeriod($currentYear - 2),
-            new TimePeriod($currentYear - 1),
-            new TimePeriod($currentYear),
+            new TimePeriod(strtotime(($currentYear - 2).'-01-01 00:00:00'), strtotime(($currentYear - 2).'-12-31 23:59:59')),
+            new TimePeriod(strtotime(($currentYear - 1).'-01-01 00:00:00'), strtotime(($currentYear - 1).'-12-31 23:59:59')),
+            new TimePeriod(strtotime($currentYear.'-01-01 00:00:00'), strtotime($currentYear.'-12-31 23:59:59')),
         ];
 
         return $this->render(
@@ -51,9 +52,10 @@ class EventStatsController extends AbstractBackendController
                 'headline' => 'SAC Pilatus Event Statistik',
                 'time_periods' => $timePeriods,
                 // 01
-                '_01_advertised_tours__total' => $this->_01advertisedTours->getTotal($timePeriods),
-                '_01_advertised_tours__with_mountain_guide' => $this->_01advertisedTours->getWithMountainGuide($timePeriods),
-                '_01_advertised_tours__without_mountain_guide' => $this->_01advertisedTours->getWithoutMountainGuide($timePeriods),
+                '_01_advertised_tours__total' => $this->_01advertisedTours->countTours($timePeriods),
+                '_01_advertised_tours__with_mountain_guide' => $this->_01advertisedTours->countToursByMountainGuideType($timePeriods, EventMountainGuide::WITH_MOUNTAIN_GUIDE),
+                '_01_advertised_tours__with_mountain_guide_offer' => $this->_01advertisedTours->countToursByMountainGuideType($timePeriods, EventMountainGuide::WITH_MOUNTAIN_GUIDE_OFFER),
+                '_01_advertised_tours__without_mountain_guide' => $this->_01advertisedTours->countToursByMountainGuideType($timePeriods, EventMountainGuide::NO_MOUNTAIN_GUIDE),
             ]
         );
     }

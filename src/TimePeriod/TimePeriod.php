@@ -17,22 +17,28 @@ namespace Markocupic\SacPilatusEventStats\TimePeriod;
 readonly class TimePeriod
 {
     public function __construct(
-        private int $year,
+        private int $startTstamp,
+        private int $endTstamp,
     ) {
-    }
-
-    public function getYear(): int
-    {
-        return $this->year;
     }
 
     public function getStartTime(): int
     {
-        return strtotime($this->year.'-01-01');
+        return $this->startTstamp;
     }
 
     public function getEndTime(): int
     {
-        return strtotime($this->year + 1 .'-01-01') - 1;
+        return $this->endTstamp;
+    }
+
+    public function getFormattedStartTime(string $format): string
+    {
+        return date($format, $this->startTstamp);
+    }
+
+    public function getFormattedEndTime(string $format): string
+    {
+        return date($format, $this->endTstamp);
     }
 }
