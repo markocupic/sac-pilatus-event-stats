@@ -46,16 +46,19 @@ class EventStatsController extends AbstractBackendController
             new TimePeriod(strtotime($currentYear.'-01-01 00:00:00'), strtotime($currentYear.'-12-31 23:59:59')),
         ];
 
+        // FS3 and FS4
+        $arrAcceptedReleaseLevels = [3, 4];
+
         return $this->render(
             '@MarkocupicSacPilatusEventStats/Backend/event_stats.html.twig',
             [
                 'headline' => 'SAC Pilatus Event Statistik',
                 'time_periods' => $timePeriods,
                 // 01
-                '_01_advertised_tours__total' => $this->_01advertisedTours->countTours($timePeriods),
-                '_01_advertised_tours__with_mountain_guide' => $this->_01advertisedTours->countToursByMountainGuideType($timePeriods, EventMountainGuide::WITH_MOUNTAIN_GUIDE),
-                '_01_advertised_tours__with_mountain_guide_offer' => $this->_01advertisedTours->countToursByMountainGuideType($timePeriods, EventMountainGuide::WITH_MOUNTAIN_GUIDE_OFFER),
-                '_01_advertised_tours__without_mountain_guide' => $this->_01advertisedTours->countToursByMountainGuideType($timePeriods, EventMountainGuide::NO_MOUNTAIN_GUIDE),
+                '_01_advertised_tours__total' => $this->_01advertisedTours->countTours($timePeriods, $arrAcceptedReleaseLevels),
+                '_01_advertised_tours__with_mountain_guide' => $this->_01advertisedTours->countToursByMountainGuideType($timePeriods, EventMountainGuide::WITH_MOUNTAIN_GUIDE, $arrAcceptedReleaseLevels),
+                '_01_advertised_tours__with_mountain_guide_offer' => $this->_01advertisedTours->countToursByMountainGuideType($timePeriods, EventMountainGuide::WITH_MOUNTAIN_GUIDE_OFFER, $arrAcceptedReleaseLevels),
+                '_01_advertised_tours__without_mountain_guide' => $this->_01advertisedTours->countToursByMountainGuideType($timePeriods, EventMountainGuide::NO_MOUNTAIN_GUIDE, $arrAcceptedReleaseLevels),
             ]
         );
     }

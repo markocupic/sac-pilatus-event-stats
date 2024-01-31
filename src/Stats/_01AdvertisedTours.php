@@ -14,10 +14,12 @@ declare(strict_types=1);
 
 namespace Markocupic\SacPilatusEventStats\Stats;
 
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use Markocupic\SacEventToolBundle\Config\EventMountainGuide;
 use Markocupic\SacEventToolBundle\Config\EventType;
+use Markocupic\SacEventToolBundle\Model\EventReleaseLevelPolicyModel;
 use Markocupic\SacPilatusEventStats\Data\DataItem;
 use Markocupic\SacPilatusEventStats\TimePeriod\TimePeriod;
 
@@ -30,15 +32,22 @@ readonly class _01AdvertisedTours
 
     /**
      * @param array<TimePeriod> $timePeriods
+     * @param array<int>        $arrAcceptedReleaseLevels
      *
      * @throws Exception
      *
      * @return array<DataItem>
      */
-    public function countTours(array $timePeriods): array
+    public function countTours(array $timePeriods, array $arrAcceptedReleaseLevels): array
     {
         $data = [];
         $qb = $this->connection->createQueryBuilder();
+
+        $arrAcceptedReleaseLevelIDS = $this->getAllowedEventReleaseLevelIDS(EventType::TOUR, $arrAcceptedReleaseLevels);
+
+        if (empty($arrAcceptedReleaseLevelIDS)) {
+            return $data;
+        }
 
         foreach ($timePeriods as $timePeriod) {
             $qb->select('COUNT(id)')
@@ -46,12 +55,11 @@ readonly class _01AdvertisedTours
                 ->where('t.eventType = ?')
                 ->andWhere('t.startDate >= ?')
                 ->andWhere('t.startDate <= ?')
-                ->andWhere('t.published = ?')
+                ->andWhere($qb->expr()->in('t.eventReleaseLevel', $arrAcceptedReleaseLevelIDS))
                 ->setParameters([
                     EventType::TOUR,
                     $timePeriod->getStartTime(),
                     $timePeriod->getEndTime(),
-                    '1',
                 ])
             ;
 
@@ -70,7 +78,7 @@ readonly class _01AdvertisedTours
      *
      * @return array<DataItem>
      */
-    public function countToursByMountainGuideType(array $timePeriods, int $mountainGuideType): array
+    public function countToursByMountainGuideType(array $timePeriods, int $mountainGuideType, array $arrAcceptedReleaseLevels): array
     {
         if (!\in_array($mountainGuideType, EventMountainGuide::ALL, true)) {
             throw new \Exception(sprintf('Invalid parameter "$mountainGuideType". Should be either "%d" or "%d".', EventMountainGuide::WITH_MOUNTAIN_GUIDE, EventMountainGuide::WITH_MOUNTAIN_GUIDE_OFFER));
@@ -79,19 +87,24 @@ readonly class _01AdvertisedTours
         $data = [];
         $qb = $this->connection->createQueryBuilder();
 
+        $arrAcceptedReleaseLevelIDS = $this->getAllowedEventReleaseLevelIDS(EventType::TOUR, $arrAcceptedReleaseLevels);
+
+        if (empty($arrAcceptedReleaseLevelIDS)) {
+            return $data;
+        }
+
         foreach ($timePeriods as $timePeriod) {
             $qb->select('COUNT(id)')
                 ->from('tl_calendar_events', 't')
                 ->where('t.eventType = ?')
                 ->andWhere('t.startDate >= ?')
                 ->andWhere('t.startDate <= ?')
-                ->andWhere('t.published = ?')
+                ->andWhere($qb->expr()->in('t.eventReleaseLevel', $arrAcceptedReleaseLevelIDS))
                 ->andWhere('t.mountainguide = ?')
                 ->setParameters([
                     EventType::TOUR,
                     $timePeriod->getStartTime(),
                     $timePeriod->getEndTime(),
-                    '1',
                     $mountainGuideType,
                 ])
             ;
@@ -102,5 +115,51 @@ readonly class _01AdvertisedTours
         }
 
         return $data;
+    }
+
+    /**
+     * @param array $arrAcceptedReleaseLevels<int>
+     *
+     * @throws Exception
+     *
+     * @return array<int>
+     */
+    private function getAllowedEventReleaseLevelIDS(string $eventType, array $arrAcceptedReleaseLevels): array
+    {
+        $qb = $this->connection->createQueryBuilder();
+
+        $qb->select('eventReleaseLevel')
+            ->from('tl_calendar_events', 't')
+            ->where('eventType = ?')
+            ->groupBy('eventReleaseLevel')
+            ->setParameters([$eventType])
+        ;
+
+        /** @var array<int> $arrReleaseLevels */
+        $arrReleaseLevelsIDS = $qb->fetchFirstColumn();
+
+        $qb->select('pid')
+            ->from('tl_event_release_level_policy', 't')
+            ->where($qb->expr()->in('t.id', ':arrIds'))
+            ->setParameter('arrIds', $arrReleaseLevelsIDS, ArrayParameterType::INTEGER)
+            ->groupBy('pid')
+        ;
+
+        /** @var array<int> $arrReleaseLevelPackages */
+        $arrReleaseLevelPackages = $qb->fetchFirstColumn();
+
+        $arrLevels = [];
+
+        foreach ($arrReleaseLevelPackages as $pid) {
+            foreach ($arrAcceptedReleaseLevels as $level) {
+                $objEventReleaseLevel = EventReleaseLevelPolicyModel::findOneByPidAndLevel($pid, $level);
+
+                if (null !== $objEventReleaseLevel) {
+                    $arrLevels[] = $objEventReleaseLevel->id;
+                }
+            }
+        }
+
+        return $arrLevels;
     }
 }
