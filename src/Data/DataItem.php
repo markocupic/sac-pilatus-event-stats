@@ -29,11 +29,6 @@ readonly class DataItem
         return $this->timePeriod;
     }
 
-    public function getYear(): int
-    {
-        return $this->timePeriod->getYear();
-    }
-
     public function getData(): int|string
     {
         return $this->data;
