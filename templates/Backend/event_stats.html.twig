@@ -2,39 +2,135 @@
 
 {% block main_content %}
     <div class="tl_listing_container sac-pilatus-event-stat--listing-container">
-        {# Start: Ausgeschriebene Touren (ab FS3) #}
-        <h3>Ausgeschriebene Touren (ab FS3):</h3>
+        {# Start: 01 Ausgeschriebene Touren (ab FS3) #}
+        <h3 class="sac-pilatus-event-stat--headline">Ausgeschriebene Touren (ab FS3):</h3>
+
         <table class="sac-pilatus-event-stat--data-table">
             <tr>
                 <th>&nbsp;</th>
                 {% for time_period in time_periods %}
-                    <th>{{ time_period.getFormattedStartTime('Y') }}</th>
+                    <th class="sac-pilatus-event-stat--data-table--data-cell">{{ time_period.getFormattedStartTime('Y') }}</th>
                 {% endfor %}
             </tr>
             <tr>
                 <th>Total</th>
                 {% for data in _01_advertised_tours__total %}
-                    <th>{{ data.getData() }}</th>
+                    <th class="sac-pilatus-event-stat--data-table--data-cell">{{ data.getData() }}</th>
                 {% endfor %}
             </tr>
             <tr>
                 <th>Mit Bergführer Angebot</th>
                 {% for data in _01_advertised_tours__with_mountain_guide_offer %}
-                    <th>{{ data.getData() }}</th>
+                    <th class="sac-pilatus-event-stat--data-table--data-cell">{{ data.getData() }}</th>
                 {% endfor %}
             </tr>
             <tr>
                 <th>Mit Bergführer</th>
                 {% for data in _01_advertised_tours__with_mountain_guide %}
-                    <th>{{ data.getData() }}</th>
+                    <th class="sac-pilatus-event-stat--data-table--data-cell">{{ data.getData() }}</th>
                 {% endfor %}
             </tr>
             <tr>
                 <th>Ohne Bergführer</th>
                 {% for data in _01_advertised_tours__without_mountain_guide %}
-                    <th>{{ data.getData() }}</th>
+                    <th class="sac-pilatus-event-stat--data-table--data-cell">{{ data.getData() }}</th>
                 {% endfor %}
             </tr>
         </table>
+
+        {# Start: 01 Ausgeschriebene Kurse (ab FS3) #}
+        <h3 class="sac-pilatus-event-stat--headline">Ausgeschriebene Kurse (ab FS3):</h3>
+
+        <table class="sac-pilatus-event-stat--data-table">
+            <tr>
+                <th>&nbsp;</th>
+                {% for time_period in time_periods %}
+                    <th class="sac-pilatus-event-stat--data-table--data-cell">{{ time_period.getFormattedStartTime('Y') }}</th>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Total</th>
+                {% for data in _01_advertised_workshops__total %}
+                    <th class="sac-pilatus-event-stat--data-table--data-cell">{{ data.getData() }}</th>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Mit Bergführer Angebot</th>
+                {% for data in _01_advertised_workshops__with_mountain_guide_offer %}
+                    <th class="sac-pilatus-event-stat--data-table--data-cell">{{ data.getData() }}</th>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Mit Bergführer</th>
+                {% for data in _01_advertised_workshops__with_mountain_guide %}
+                    <th class="sac-pilatus-event-stat--data-table--data-cell">{{ data.getData() }}</th>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Ohne Bergführer</th>
+                {% for data in _01_advertised_workshops__without_mountain_guide %}
+                    <th class="sac-pilatus-event-stat--data-table--data-cell">{{ data.getData() }}</th>
+                {% endfor %}
+            </tr>
+        </table>
+
+        {# Start: 01 Ausgeschriebene Events (ab FS3) #}
+        <h3 class="sac-pilatus-event-stat--headline">Ausgeschriebene Events geordnet nach Gruppe (ab FS3):</h3>
+
+        <table class="sac-pilatus-event-stat--data-table">
+            <tr>
+                <th>&nbsp;</th>
+                {% for time_period in time_periods %}
+                    <th class="sac-pilatus-event-stat--data-table--data-cell">{{ time_period.getFormattedStartTime('Y') }}</th>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Total Events</th>
+                {% for data in _01_advertised_workshops__events_all %}
+                    <th class="sac-pilatus-event-stat--data-table--data-cell">{{ data.getData() }}</th>
+                {% endfor %}
+            </tr>
+
+            {% for data_org in _01_advertised_workshops__events_grouped_by_organizer %}
+                <tr>
+                    <th>{{ data_org.organizer.title }}</th>
+                    {% for data in data_org.data %}
+                        <th class="sac-pilatus-event-stat--data-table--data-cell">{{ data.getData() }}</th>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+        <p>Anm: Ein Event kann mehrere Organisatoren/Gruppen zugeordnet werden.</p>
+
+        {# Start: 02 Leitende aus usgeschriebenen Events (ab FS3) #}
+        <h3 class="sac-pilatus-event-stat--headline">Leitende aus ausgeschriebenen Events (ab FS3):</h3>
+
+        <table class="sac-pilatus-event-stat--data-table">
+            <tr>
+                <th>&nbsp;</th>
+                {% for time_period in time_periods %}
+                    <th class="sac-pilatus-event-stat--data-table--data-cell">{{ time_period.getFormattedStartTime('Y') }}</th>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Anzahl Leitende (kumuliert)</th>
+                {% for data in _02_tour_guides__all %}
+                    <th class="sac-pilatus-event-stat--data-table--data-cell">{{ data.getData() }}</th>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Anzahl Nicht-Bergführer (kumuliert)*</th>
+                {% for data in _02_tour_guides__not_mountain_guide %}
+                    <th class="sac-pilatus-event-stat--data-table--data-cell">{{ data.getData() }}</th>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Anzahl Bergführer (kumuliert)**</th>
+                {% for data in _02_tour_guides__mountain_guide %}
+                    <th class="sac-pilatus-event-stat--data-table--data-cell">{{ data.getData() }}</th>
+                {% endfor %}
+            </tr>
+        </table>
+        <p>*Leiter darf nicht Bergf. sein. **Leiter muss Berf. sein.</p>
     </div>
 {% endblock %}

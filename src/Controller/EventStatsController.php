@@ -17,7 +17,9 @@ namespace Markocupic\SacPilatusEventStats\Controller;
 use Contao\CoreBundle\Controller\AbstractBackendController;
 use Doctrine\DBAL\Exception;
 use Markocupic\SacEventToolBundle\Config\EventMountainGuide;
-use Markocupic\SacPilatusEventStats\Stats\_01AdvertisedTours;
+use Markocupic\SacEventToolBundle\Config\EventType;
+use Markocupic\SacPilatusEventStats\Stats\_01AdvertisedEvents;
+use Markocupic\SacPilatusEventStats\Stats\_02TourGuides;
 use Markocupic\SacPilatusEventStats\TimePeriod\TimePeriod;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -29,7 +31,8 @@ use Symfony\Component\Routing\Annotation\Route;
 class EventStatsController extends AbstractBackendController
 {
     public function __construct(
-        private readonly _01AdvertisedTours $_01advertisedTours,
+        private readonly _01AdvertisedEvents $_01AdvertisedEvents,
+        private readonly _02TourGuides $_02TourGuides,
     ) {
     }
 
@@ -54,11 +57,24 @@ class EventStatsController extends AbstractBackendController
             [
                 'headline' => 'SAC Pilatus Event Statistik',
                 'time_periods' => $timePeriods,
-                // 01
-                '_01_advertised_tours__total' => $this->_01advertisedTours->countTours($timePeriods, $arrAcceptedReleaseLevels),
-                '_01_advertised_tours__with_mountain_guide' => $this->_01advertisedTours->countToursByMountainGuideType($timePeriods, EventMountainGuide::WITH_MOUNTAIN_GUIDE, $arrAcceptedReleaseLevels),
-                '_01_advertised_tours__with_mountain_guide_offer' => $this->_01advertisedTours->countToursByMountainGuideType($timePeriods, EventMountainGuide::WITH_MOUNTAIN_GUIDE_OFFER, $arrAcceptedReleaseLevels),
-                '_01_advertised_tours__without_mountain_guide' => $this->_01advertisedTours->countToursByMountainGuideType($timePeriods, EventMountainGuide::NO_MOUNTAIN_GUIDE, $arrAcceptedReleaseLevels),
+                // 01 advertised tours
+                '_01_advertised_tours__total' => $this->_01AdvertisedEvents->countEvents($timePeriods, $arrAcceptedReleaseLevels, EventType::TOUR),
+                '_01_advertised_tours__with_mountain_guide' => $this->_01AdvertisedEvents->countEventsByMountainGuideType($timePeriods, EventMountainGuide::WITH_MOUNTAIN_GUIDE, $arrAcceptedReleaseLevels, EventType::TOUR),
+                '_01_advertised_tours__with_mountain_guide_offer' => $this->_01AdvertisedEvents->countEventsByMountainGuideType($timePeriods, EventMountainGuide::WITH_MOUNTAIN_GUIDE_OFFER, $arrAcceptedReleaseLevels, EventType::TOUR),
+                '_01_advertised_tours__without_mountain_guide' => $this->_01AdvertisedEvents->countEventsByMountainGuideType($timePeriods, EventMountainGuide::NO_MOUNTAIN_GUIDE, $arrAcceptedReleaseLevels, EventType::TOUR),
+                // 01 advertised workshops
+                '_01_advertised_workshops__total' => $this->_01AdvertisedEvents->countEvents($timePeriods, $arrAcceptedReleaseLevels, EventType::COURSE),
+                '_01_advertised_workshops__with_mountain_guide' => $this->_01AdvertisedEvents->countEventsByMountainGuideType($timePeriods, EventMountainGuide::WITH_MOUNTAIN_GUIDE, $arrAcceptedReleaseLevels, EventType::COURSE),
+                '_01_advertised_workshops__with_mountain_guide_offer' => $this->_01AdvertisedEvents->countEventsByMountainGuideType($timePeriods, EventMountainGuide::WITH_MOUNTAIN_GUIDE_OFFER, $arrAcceptedReleaseLevels, EventType::COURSE),
+                '_01_advertised_workshops__without_mountain_guide' => $this->_01AdvertisedEvents->countEventsByMountainGuideType($timePeriods, EventMountainGuide::NO_MOUNTAIN_GUIDE, $arrAcceptedReleaseLevels, EventType::COURSE),
+                // 01 advertised events
+                '_01_advertised_workshops__organizers' => $this->_01AdvertisedEvents->getOrganizers(),
+                '_01_advertised_workshops__events_all' => $this->_01AdvertisedEvents->countEvents($timePeriods, $arrAcceptedReleaseLevels),
+                '_01_advertised_workshops__events_grouped_by_organizer' => $this->_01AdvertisedEvents->countEventsGroupedByOrganizer($timePeriods, $arrAcceptedReleaseLevels),
+                // 02 count tour guides
+                '_02_tour_guides__all' => $this->_02TourGuides->countTourGuides($timePeriods, $arrAcceptedReleaseLevels, null),
+                '_02_tour_guides__not_mountain_guide' => $this->_02TourGuides->countTourGuides($timePeriods, $arrAcceptedReleaseLevels, false),
+                '_02_tour_guides__mountain_guide' => $this->_02TourGuides->countTourGuides($timePeriods, $arrAcceptedReleaseLevels, true),
             ]
         );
     }
