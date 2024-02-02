@@ -21,7 +21,8 @@
     },
     "require": {
         "php": "^8.2",
-        "contao/core-bundle": "^4.13 || ^5.0"
+        "contao/core-bundle": "^4.13 || ^5.0",
+        "markocupic/sac-event-tool-bundle": "*"
     },
     "require-dev": {
         "contao/manager-plugin": "^2.12"
@@ -44,6 +45,5 @@
     "scripts": {
         "cs-fixer": "@php tools/ecs/vendor/bin/ecs check config/ contao/ src/ templates/ tests/ --config tools/ecs/config.php --fix --ansi",
         "unit-tests": "@php tools/phpunit/vendor/bin/phpunit -c tools/phpunit/phpunit.xml.dist"
-    },
-    "version": "1.0"
+    }
 }
