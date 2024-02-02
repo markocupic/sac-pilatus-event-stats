@@ -1,5 +1,9 @@
 .sac-pilatus-event-stat--headline {
     margin-top: 48px;
+
+    &:first-child {
+        margin-top: 16px;
+    }
 }
 
 .sac-pilatus-event-stat--data-table {
@@ -17,4 +21,5 @@
 
 .sac-pilatus-event-stat--small-text {
     font-size: smaller;
+    line-height: 1.4;
 }
