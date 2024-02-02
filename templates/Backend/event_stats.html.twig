@@ -131,7 +131,7 @@
                 {% endfor %}
             </tr>
         </table>
-        <p class="sac-pilatus-event-stat--small-text">*Leiter darf nicht Bergf. sein. **Leiter muss Berf. sein.</p>
+        <p class="sac-pilatus-event-stat--small-text">*Leiter darf nicht Bergf. sein. **Leiter muss Bergf. sein.</p>
 
         {# Start: 03 Anmeldungen von Teilnehmenden aus ausgeschriebenen Events (ab FS3)  #}
         <h3 class="sac-pilatus-event-stat--headline">Anmeldungen von Teilnehmenden aus ausgeschriebenen Events (ab FS3):</h3>
@@ -144,7 +144,7 @@
                 {% endfor %}
             </tr>
             <tr>
-                <td>Total Anmeldungen</td>
+                <td>Anmeldungen Total</td>
                 {% for data in _03_event_subscriptions__total %}
                     <td class="sac-pilatus-event-stat--data-table--data-cell">{{ data.getData() }}</td>
                 {% endfor %}
