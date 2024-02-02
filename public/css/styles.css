@@ -1,16 +1,20 @@
 .sac-pilatus-event-stat--headline {
-    margin-top: 32px;
+    margin-top: 48px;
 }
 
 .sac-pilatus-event-stat--data-table {
     margin: 10px 0 8px 0;
 
-    & th {
+    & td, & th {
         padding: 8px;
         border: 1px solid #ccc;
     }
 }
 
-.sac-pilatus-event-stat--data-table--data-cell{
+.sac-pilatus-event-stat--data-table--data-cell {
     text-align: end;
+}
+
+.sac-pilatus-event-stat--small-text {
+    font-size: small;
 }

@@ -14,11 +14,10 @@ declare(strict_types=1);
 
 namespace Markocupic\SacPilatusEventStats\Stats;
 
-use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use Markocupic\SacEventToolBundle\Config\EventMountainGuide;
-use Markocupic\SacEventToolBundle\Model\EventReleaseLevelPolicyModel;
+use Markocupic\SacEventToolBundle\Config\EventType;
 use Markocupic\SacPilatusEventStats\Data\DataItem;
 use Markocupic\SacPilatusEventStats\TimePeriod\TimePeriod;
 use Markocupic\SacPilatusEventStats\Util\EventReleaseLevelUtil;
@@ -55,10 +54,14 @@ readonly class _01AdvertisedEvents
                 ->from('tl_calendar_events', 't')
                 ->where('t.startDate >= ?')
                 ->andWhere('t.startDate <= ?')
+                ->andWhere('t.eventType != ?')
+                ->andWhere('t.eventType != ?')
                 ->andWhere($qb->expr()->in('t.eventReleaseLevel', $arrAcceptedReleaseLevelIds))
                 ->setParameters([
                     $timePeriod->getStartTime(),
                     $timePeriod->getEndTime(),
+                    EventType::GENERAL_EVENT,
+                    EventType::LAST_MINUTE_TOUR,
                 ])
             ;
 
@@ -107,11 +110,15 @@ readonly class _01AdvertisedEvents
                 ->from('tl_calendar_events', 't')
                 ->where('t.startDate >= ?')
                 ->andWhere('t.startDate <= ?')
+                ->andWhere('t.eventType != ?')
+                ->andWhere('t.eventType != ?')
                 ->andWhere($qb->expr()->in('t.eventReleaseLevel', $arrAcceptedReleaseLevelIds))
                 ->andWhere('t.mountainguide = ?')
                 ->setParameters([
                     $timePeriod->getStartTime(),
                     $timePeriod->getEndTime(),
+                    EventType::GENERAL_EVENT,
+                    EventType::LAST_MINUTE_TOUR,
                     $mountainGuideType,
                 ])
             ;
@@ -168,56 +175,5 @@ readonly class _01AdvertisedEvents
             ->orderBy('t.sorting', 'ASC')
             ->fetchAllAssociative()
         ;
-    }
-
-    /**
-     * @param array $arrAcceptedReleaseLevels<int>
-     *
-     * @throws Exception
-     *
-     * @return array<int>
-     */
-    private function getAllowedEventReleaseLevelIds(array $arrAcceptedReleaseLevels, string|null $eventType = null): array
-    {
-        $qb = $this->connection->createQueryBuilder();
-
-        $qb->select('eventReleaseLevel')
-            ->from('tl_calendar_events', 't')
-            ->where('id > 0')
-            ;
-
-        // event type filter
-        if (null !== $eventType && \strlen($eventType)) {
-            $qb->andWhere(sprintf('eventType = "%s"', $eventType));
-        }
-
-        $qb->groupBy('eventReleaseLevel');
-
-        /** @var array<int> $arrReleaseLevels */
-        $arrReleaseLevelsIDS = $qb->fetchFirstColumn();
-
-        $qb->select('pid')
-            ->from('tl_event_release_level_policy', 't')
-            ->where($qb->expr()->in('t.id', ':arrIds'))
-            ->setParameter('arrIds', $arrReleaseLevelsIDS, ArrayParameterType::INTEGER)
-            ->groupBy('pid')
-        ;
-
-        /** @var array<int> $arrReleaseLevelPackages */
-        $arrReleaseLevelPackages = $qb->fetchFirstColumn();
-
-        $arrLevels = [];
-
-        foreach ($arrReleaseLevelPackages as $pid) {
-            foreach ($arrAcceptedReleaseLevels as $level) {
-                $objEventReleaseLevel = EventReleaseLevelPolicyModel::findOneByPidAndLevel($pid, $level);
-
-                if (null !== $objEventReleaseLevel) {
-                    $arrLevels[] = $objEventReleaseLevel->id;
-                }
-            }
-        }
-
-        return $arrLevels;
     }
 }

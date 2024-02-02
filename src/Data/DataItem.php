@@ -20,7 +20,7 @@ readonly class DataItem
 {
     public function __construct(
         private TimePeriod $timePeriod,
-        private int|string $data,
+        private array|int|string $data,
     ) {
     }
 
@@ -29,7 +29,7 @@ readonly class DataItem
         return $this->timePeriod;
     }
 
-    public function getData(): int|string
+    public function getData(): array|int|string
     {
         return $this->data;
     }

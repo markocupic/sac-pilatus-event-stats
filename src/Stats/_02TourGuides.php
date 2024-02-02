@@ -20,6 +20,7 @@ use Contao\UserModel;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use Markocupic\SacEventToolBundle\CalendarEventsHelper;
+use Markocupic\SacEventToolBundle\Config\EventType;
 use Markocupic\SacEventToolBundle\Config\TourguideQualification;
 use Markocupic\SacPilatusEventStats\Data\DataItem;
 use Markocupic\SacPilatusEventStats\TimePeriod\TimePeriod;
@@ -57,10 +58,14 @@ readonly class _02TourGuides
                 ->from('tl_calendar_events', 't')
                 ->where('t.startDate >= ?')
                 ->andWhere('t.startDate <= ?')
+                ->andWhere('t.eventType != ?')
+                ->andWhere('t.eventType != ?')
                 ->andWhere($qb->expr()->in('t.eventReleaseLevel', $arrAcceptedReleaseLevelIds))
                 ->setParameters([
                     $timePeriod->getStartTime(),
                     $timePeriod->getEndTime(),
+                    EventType::GENERAL_EVENT,
+                    EventType::LAST_MINUTE_TOUR,
                 ])
                 ->fetchFirstColumn()
                 ;

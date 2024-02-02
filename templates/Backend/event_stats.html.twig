@@ -13,27 +13,27 @@
                 {% endfor %}
             </tr>
             <tr>
-                <th>Total</th>
+                <td>Total</td>
                 {% for data in _01_advertised_tours__total %}
-                    <th class="sac-pilatus-event-stat--data-table--data-cell">{{ data.getData() }}</th>
+                    <td class="sac-pilatus-event-stat--data-table--data-cell">{{ data.getData() }}</td>
                 {% endfor %}
             </tr>
             <tr>
-                <th>Mit Bergführer Angebot</th>
+                <td>Mit Bergführer Angebot</td>
                 {% for data in _01_advertised_tours__with_mountain_guide_offer %}
-                    <th class="sac-pilatus-event-stat--data-table--data-cell">{{ data.getData() }}</th>
+                    <td class="sac-pilatus-event-stat--data-table--data-cell">{{ data.getData() }}</td>
                 {% endfor %}
             </tr>
             <tr>
-                <th>Mit Bergführer</th>
+                <td>Mit Bergführer</td>
                 {% for data in _01_advertised_tours__with_mountain_guide %}
-                    <th class="sac-pilatus-event-stat--data-table--data-cell">{{ data.getData() }}</th>
+                    <td class="sac-pilatus-event-stat--data-table--data-cell">{{ data.getData() }}</td>
                 {% endfor %}
             </tr>
             <tr>
-                <th>Ohne Bergführer</th>
+                <td>Ohne Bergführer</td>
                 {% for data in _01_advertised_tours__without_mountain_guide %}
-                    <th class="sac-pilatus-event-stat--data-table--data-cell">{{ data.getData() }}</th>
+                    <td class="sac-pilatus-event-stat--data-table--data-cell">{{ data.getData() }}</td>
                 {% endfor %}
             </tr>
         </table>
@@ -49,32 +49,32 @@
                 {% endfor %}
             </tr>
             <tr>
-                <th>Total</th>
+                <td>Total</td>
                 {% for data in _01_advertised_workshops__total %}
-                    <th class="sac-pilatus-event-stat--data-table--data-cell">{{ data.getData() }}</th>
+                    <td class="sac-pilatus-event-stat--data-table--data-cell">{{ data.getData() }}</td>
                 {% endfor %}
             </tr>
             <tr>
-                <th>Mit Bergführer Angebot</th>
+                <td>Mit Bergführer Angebot</td>
                 {% for data in _01_advertised_workshops__with_mountain_guide_offer %}
-                    <th class="sac-pilatus-event-stat--data-table--data-cell">{{ data.getData() }}</th>
+                    <td class="sac-pilatus-event-stat--data-table--data-cell">{{ data.getData() }}</td>
                 {% endfor %}
             </tr>
             <tr>
-                <th>Mit Bergführer</th>
+                <td>Mit Bergführer</td>
                 {% for data in _01_advertised_workshops__with_mountain_guide %}
-                    <th class="sac-pilatus-event-stat--data-table--data-cell">{{ data.getData() }}</th>
+                    <td class="sac-pilatus-event-stat--data-table--data-cell">{{ data.getData() }}</td>
                 {% endfor %}
             </tr>
             <tr>
-                <th>Ohne Bergführer</th>
+                <td>Ohne Bergführer</td>
                 {% for data in _01_advertised_workshops__without_mountain_guide %}
-                    <th class="sac-pilatus-event-stat--data-table--data-cell">{{ data.getData() }}</th>
+                    <td class="sac-pilatus-event-stat--data-table--data-cell">{{ data.getData() }}</td>
                 {% endfor %}
             </tr>
         </table>
 
-        {# Start: 01 Ausgeschriebene Events (ab FS3) #}
+        {# Start: 01 Ausgeschriebene Events geordnet nach Gruppe (ab FS3) #}
         <h3 class="sac-pilatus-event-stat--headline">Ausgeschriebene Events geordnet nach Gruppe (ab FS3):</h3>
 
         <table class="sac-pilatus-event-stat--data-table">
@@ -85,24 +85,24 @@
                 {% endfor %}
             </tr>
             <tr>
-                <th>Total Events</th>
+                <td>Total Events</td>
                 {% for data in _01_advertised_workshops__events_all %}
-                    <th class="sac-pilatus-event-stat--data-table--data-cell">{{ data.getData() }}</th>
+                    <td class="sac-pilatus-event-stat--data-table--data-cell">{{ data.getData() }}</td>
                 {% endfor %}
             </tr>
-
             {% for data_org in _01_advertised_workshops__events_grouped_by_organizer %}
                 <tr>
-                    <th>{{ data_org.organizer.title }}</th>
+                    <td>{{ data_org.organizer.title }}</td>
                     {% for data in data_org.data %}
-                        <th class="sac-pilatus-event-stat--data-table--data-cell">{{ data.getData() }}</th>
+                        <td class="sac-pilatus-event-stat--data-table--data-cell">{{ data.getData() }}</td>
                     {% endfor %}
                 </tr>
             {% endfor %}
         </table>
-        <p>Anm: Ein Event kann mehrere Organisatoren/Gruppen zugeordnet werden.</p>
+        <p class="sac-pilatus-event-stat--small-text">Anm: Ein Event kann mehrere Organisatoren/Gruppen zugeordnet werden.</p>
+        <p class="sac-pilatus-event-stat--small-text">Anm: Es wurden keine Last Minute Touren und Veranstaltungen berücksichtigt.</p>
 
-        {# Start: 02 Leitende aus usgeschriebenen Events (ab FS3) #}
+        {# Start: 02 Leitende aus ausgeschriebenen Events (ab FS3) #}
         <h3 class="sac-pilatus-event-stat--headline">Leitende aus ausgeschriebenen Events (ab FS3):</h3>
 
         <table class="sac-pilatus-event-stat--data-table">
@@ -113,24 +113,70 @@
                 {% endfor %}
             </tr>
             <tr>
-                <th>Anzahl Leitende (kumuliert)</th>
+                <td>Anzahl Leitende (kumuliert)</td>
                 {% for data in _02_tour_guides__all %}
-                    <th class="sac-pilatus-event-stat--data-table--data-cell">{{ data.getData() }}</th>
+                    <td class="sac-pilatus-event-stat--data-table--data-cell">{{ data.getData() }}</td>
                 {% endfor %}
             </tr>
             <tr>
-                <th>Anzahl Nicht-Bergführer (kumuliert)*</th>
+                <td>Anzahl Nicht-Bergführer (kumuliert)*</td>
                 {% for data in _02_tour_guides__not_mountain_guide %}
-                    <th class="sac-pilatus-event-stat--data-table--data-cell">{{ data.getData() }}</th>
+                    <td class="sac-pilatus-event-stat--data-table--data-cell">{{ data.getData() }}</td>
                 {% endfor %}
             </tr>
             <tr>
-                <th>Anzahl Bergführer (kumuliert)**</th>
+                <td>Anzahl Bergführer (kumuliert)**</td>
                 {% for data in _02_tour_guides__mountain_guide %}
-                    <th class="sac-pilatus-event-stat--data-table--data-cell">{{ data.getData() }}</th>
+                    <td class="sac-pilatus-event-stat--data-table--data-cell">{{ data.getData() }}</td>
                 {% endfor %}
             </tr>
         </table>
-        <p>*Leiter darf nicht Bergf. sein. **Leiter muss Berf. sein.</p>
+        <p class="sac-pilatus-event-stat--small-text">*Leiter darf nicht Bergf. sein. **Leiter muss Berf. sein.</p>
+
+        {# Start: 03 Anmeldungen von Teilnehmenden aus ausgeschriebenen Events (ab FS3)  #}
+        <h3 class="sac-pilatus-event-stat--headline">Anmeldungen von Teilnehmenden aus ausgeschriebenen Events (ab FS3):</h3>
+
+        <table class="sac-pilatus-event-stat--data-table">
+            <tr>
+                <th>&nbsp;</th>
+                {% for time_period in time_periods %}
+                    <th class="sac-pilatus-event-stat--data-table--data-cell">{{ time_period.getFormattedStartTime('Y') }}</th>
+                {% endfor %}
+            </tr>
+            <tr>
+                <td>Total Anmeldungen</td>
+                {% for data in _03_event_subscriptions__total %}
+                    <td class="sac-pilatus-event-stat--data-table--data-cell">{{ data.getData() }}</td>
+                {% endfor %}
+            </tr>
+            {% for subscription_state in _03_event_subscriptions__grouped %}
+                <tr>
+                    <td>{{ subscription_state.eventSubscriptionStateTrans }}</td>
+
+                    {% for data_sub in subscription_state.data %}
+                        <td class="sac-pilatus-event-stat--data-table--data-cell">{{ data_sub.getData() }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+
+        {# Start: 03 Bestätigte Teilnehmende aus ausgeschriebenen Events (ab FS4) #}
+        <h3 class="sac-pilatus-event-stat--headline">Bestätigte Teilnehmende aus ausgeschriebenen Events (ab FS4):</h3>
+
+        <table class="sac-pilatus-event-stat--data-table">
+            <tr>
+                <th>&nbsp;</th>
+                {% for time_period in time_periods %}
+                    <th class="sac-pilatus-event-stat--data-table--data-cell">{{ time_period.getFormattedStartTime('Y') }}</th>
+                {% endfor %}
+            </tr>
+            {% for data in _03_event_subscriptions__age_and_gender_distribution %}
+                <tr>
+                    {% for value in data %}
+                        <td class="sac-pilatus-event-stat--data-table--data-cell">{{ value }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
     </div>
 {% endblock %}
