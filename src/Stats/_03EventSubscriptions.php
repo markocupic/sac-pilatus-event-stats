@@ -71,20 +71,37 @@ readonly class _03EventSubscriptions
         }
 
         foreach ($timePeriods as $timePeriod) {
-            $arrAll = $this->connection->fetchAllAssociative(
-                'SELECT t.dateOfBirth,t.gender FROM tl_calendar_events_member AS t WHERE t.hasParticipated = ? AND t.eventId IN (SELECT id FROM tl_calendar_events AS tt WHERE tt.startDate >= ? AND tt.startDate <= ? AND (eventType = ? OR eventType = ?) AND tt.eventReleaseLevel IN ('.implode(',', $arrAcceptedReleaseLevelIds).'))',
-                [
-                    '1',
+            $qbSub = $this->connection->createQueryBuilder();
+
+            $arrEventIds = $qbSub->select('tt.id')
+                ->from('tl_calendar_events', 'tt')
+                ->where('tt.startDate >= ? AND tt.startDate <= ?')
+                ->andWhere('(tt.eventType = ? OR tt.eventType = ?)')
+                ->andWhere($qbSub->expr()->in('tt.eventReleaseLevel', $arrAcceptedReleaseLevelIds))
+                ->setParameters([
                     $timePeriod->getStartTime(),
                     $timePeriod->getEndTime(),
                     EventType::TOUR,
                     EventType::COURSE,
-                ]
-            );
+                ])
+                ->fetchFirstColumn()
+                ;
+
+            $qb = $this->connection->createQueryBuilder();
+
+            $arrSubscriptions = $qb->select('t.dateOfBirth,t.gender')
+                ->from('tl_calendar_events_member', 't')
+                ->where('t.hasParticipated = ?')
+                ->andWhere($qb->expr()->in('t.eventId', $arrEventIds))
+                ->setParameters([
+                    '1',
+                ])
+                ->fetchAllAssociative()
+            ;
 
             $year = (int) $timePeriod->getFormattedStartTime('Y');
 
-            foreach ($arrAll as $row) {
+            foreach ($arrSubscriptions as $row) {
                 $gender = $row['gender'];
                 $dateOfBirth = $row['dateOfBirth'];
 

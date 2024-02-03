@@ -52,10 +52,8 @@ readonly class _01AdvertisedEvents
         foreach ($timePeriods as $timePeriod) {
             $qb->select('COUNT(id)')
                 ->from('tl_calendar_events', 't')
-                ->where('t.startDate >= ?')
-                ->andWhere('t.startDate <= ?')
-                ->andWhere('t.eventType != ?')
-                ->andWhere('t.eventType != ?')
+                ->where('t.startDate >= ? AND t.startDate <= ?')
+                ->andWhere('t.eventType != ? AND t.eventType != ?')
                 ->andWhere($qb->expr()->in('t.eventReleaseLevel', $arrAcceptedReleaseLevelIds))
                 ->setParameters([
                     $timePeriod->getStartTime(),
@@ -108,10 +106,8 @@ readonly class _01AdvertisedEvents
         foreach ($timePeriods as $timePeriod) {
             $qb->select('COUNT(id)')
                 ->from('tl_calendar_events', 't')
-                ->where('t.startDate >= ?')
-                ->andWhere('t.startDate <= ?')
-                ->andWhere('t.eventType != ?')
-                ->andWhere('t.eventType != ?')
+                ->where('t.startDate >= ? AND t.startDate <= ?')
+                ->andWhere('t.eventType != ? AND t.eventType != ?')
                 ->andWhere($qb->expr()->in('t.eventReleaseLevel', $arrAcceptedReleaseLevelIds))
                 ->andWhere('t.mountainguide = ?')
                 ->setParameters([

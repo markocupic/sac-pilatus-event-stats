@@ -56,10 +56,8 @@ readonly class _02TourGuides
         foreach ($timePeriods as $timePeriod) {
             $arrEventIds = $qb->select('id')
                 ->from('tl_calendar_events', 't')
-                ->where('t.startDate >= ?')
-                ->andWhere('t.startDate <= ?')
-                ->andWhere('t.eventType != ?')
-                ->andWhere('t.eventType != ?')
+                ->where('t.startDate >= ? AND t.startDate <= ?')
+                ->andWhere('t.eventType != ? AND t.eventType != ?')
                 ->andWhere($qb->expr()->in('t.eventReleaseLevel', $arrAcceptedReleaseLevelIds))
                 ->setParameters([
                     $timePeriod->getStartTime(),
