@@ -113,19 +113,19 @@
                 {% endfor %}
             </tr>
             <tr>
-                <td>Anzahl Leitende (kumuliert)</td>
+                <td>Anzahl Leitende</td>
                 {% for data in _02_tour_guides__all %}
                     <td class="sac-pilatus-event-stat--data-table--data-cell">{{ data.getData() }}</td>
                 {% endfor %}
             </tr>
             <tr>
-                <td>Anzahl Nicht-Bergführer (kumuliert)*</td>
+                <td>Anzahl Nicht-Bergführer*</td>
                 {% for data in _02_tour_guides__not_mountain_guide %}
                     <td class="sac-pilatus-event-stat--data-table--data-cell">{{ data.getData() }}</td>
                 {% endfor %}
             </tr>
             <tr>
-                <td>Anzahl Bergführer (kumuliert)**</td>
+                <td>Anzahl Bergführer**</td>
                 {% for data in _02_tour_guides__mountain_guide %}
                     <td class="sac-pilatus-event-stat--data-table--data-cell">{{ data.getData() }}</td>
                 {% endfor %}

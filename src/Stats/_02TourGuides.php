@@ -68,13 +68,13 @@ readonly class _02TourGuides
                 ->fetchFirstColumn()
                 ;
 
-            $intInstructors = 0;
+            $arrInstructorIds = [];
 
             foreach ($arrEventIds as $eventId) {
                 $event = CalendarEventsModel::findByPk($eventId);
 
                 if (null === $isMountainGuide) {
-                    $intInstructors += \count(CalendarEventsHelper::getInstructorsAsArray($event, false));
+                    $arrInstructorIds = array_merge($arrInstructorIds, CalendarEventsHelper::getInstructorsAsArray($event, false));
                 } else {
                     $arrIds = CalendarEventsHelper::getInstructorsAsArray($event, false);
 
@@ -84,11 +84,11 @@ readonly class _02TourGuides
 
                             if (true === $isMountainGuide) { // User must be a mountain guide
                                 if (\in_array(TourguideQualification::MOUNTAIN_GUIDE, array_map('intval', $arrTourGuideQualifications), true)) {
-                                    ++$intInstructors;
+                                    $arrInstructorIds[] = $userId;
                                 }
                             } elseif (false === $isMountainGuide) { // User must not be a mountain guide
                                 if (!\in_array(TourguideQualification::MOUNTAIN_GUIDE, array_map('intval', $arrTourGuideQualifications), true)) {
-                                    ++$intInstructors;
+                                    $arrInstructorIds[] = $userId;
                                 }
                             }
                         }
@@ -96,7 +96,9 @@ readonly class _02TourGuides
                 }
             }
 
-            $data[] = new DataItem($timePeriod, $intInstructors);
+            $count = \count(array_filter(array_unique($arrInstructorIds)));
+
+            $data[] = new DataItem($timePeriod, $count);
         }
 
         return $data;
