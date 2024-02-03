@@ -76,7 +76,7 @@ readonly class _03EventSubscriptions
             $arrEventIds = $qbSub->select('tt.id')
                 ->from('tl_calendar_events', 'tt')
                 ->where('tt.startDate >= ? AND tt.startDate <= ?')
-                ->andWhere('(tt.eventType = ? OR tt.eventType = ?)')
+                ->andWhere('tt.eventType = ? OR tt.eventType = ?')
                 ->andWhere($qbSub->expr()->in('tt.eventReleaseLevel', $arrAcceptedReleaseLevelIds))
                 ->setParameters([
                     $timePeriod->getStartTime(),
@@ -167,9 +167,8 @@ readonly class _03EventSubscriptions
         foreach ($timePeriods as $timePeriod) {
             $arrEventIds = $qb->select('id')
                 ->from('tl_calendar_events', 't')
-                ->where('t.startDate >= ?')
-                ->andWhere('t.startDate <= ?')
-                ->andWhere('(t.eventType = ? OR t.eventType = ?)')
+                ->where('t.startDate >= ? AND t.startDate <= ?')
+                ->andWhere('t.eventType = ? OR t.eventType = ?')
                 ->andWhere($qb->expr()->in('t.eventReleaseLevel', $arrAcceptedReleaseLevelIds))
                 ->setParameters([
                     $timePeriod->getStartTime(),
@@ -220,9 +219,8 @@ readonly class _03EventSubscriptions
         foreach ($timePeriods as $timePeriod) {
             $arrEventIdsAll[] = $qb->select('id')
                 ->from('tl_calendar_events', 't')
-                ->where('t.startDate >= ?')
-                ->andWhere('t.startDate <= ?')
-                ->andWhere('(t.eventType = ? OR t.eventType = ?)')
+                ->where('t.startDate >= ? AND t.startDate <= ?')
+                ->andWhere('t.eventType = ? OR t.eventType = ?')
                 ->andWhere($qb->expr()->in('t.eventReleaseLevel', $arrAcceptedReleaseLevelIds))
                 ->setParameters([
                     $timePeriod->getStartTime(),

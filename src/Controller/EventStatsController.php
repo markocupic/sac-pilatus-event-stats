@@ -25,9 +25,6 @@ use Markocupic\SacPilatusEventStats\TimePeriod\TimePeriod;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * https://github.com/jonasmueller1/sac-pilatus-website/issues/103.
- */
 #[Route('/%contao.backend.route_prefix%/event_stats', name: self::class, defaults: ['_scope' => 'backend'])]
 class EventStatsController extends AbstractBackendController
 {
