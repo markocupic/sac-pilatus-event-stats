@@ -11,3 +11,9 @@ declare(strict_types=1);
  * please view the LICENSE file that was distributed with this source code.
  * @link https://github.com/markocupic/sac-pilatus-event-stats
  */
+
+use Markocupic\SacPilatusEventStats\Controller\EventStatsController;
+
+$GLOBALS['BE_MOD']['sac_be_modules'][EventStatsController::BACKEND_MODULE_TYPE] = [
+    'hideInNavigation' => true,
+];

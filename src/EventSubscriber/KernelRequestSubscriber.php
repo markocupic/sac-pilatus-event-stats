@@ -15,20 +15,19 @@ declare(strict_types=1);
 namespace Markocupic\SacPilatusEventStats\EventSubscriber;
 
 use Contao\CoreBundle\Routing\ScopeMatcher;
+use Markocupic\SacPilatusEventStats\Controller\EventStatsController;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
-class KernelRequestSubscriber implements EventSubscriberInterface
+readonly class KernelRequestSubscriber implements EventSubscriberInterface
 {
-    protected $scopeMatcher;
-
-    public function __construct(ScopeMatcher $scopeMatcher)
-    {
-        $this->scopeMatcher = $scopeMatcher;
+    public function __construct(
+        private ScopeMatcher $scopeMatcher,
+    ) {
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [KernelEvents::REQUEST => 'onKernelRequest'];
     }
@@ -37,8 +36,14 @@ class KernelRequestSubscriber implements EventSubscriberInterface
     {
         $request = $e->getRequest();
 
-        if ($this->scopeMatcher->isBackendRequest($request)) {
-            $GLOBALS['TL_CSS'][] = 'bundles/markocupicsacpilatuseventstats/css/styles.css';
+        if (!$this->scopeMatcher->isBackendRequest($request)) {
+            return;
         }
+
+        if (EventStatsController::class !== $request->attributes->get('_controller')) {
+            return;
+        }
+
+        $GLOBALS['TL_CSS'][] = 'bundles/markocupicsacpilatuseventstats/css/styles.css';
     }
 }

@@ -15,6 +15,10 @@ declare(strict_types=1);
 namespace Markocupic\SacPilatusEventStats\Controller;
 
 use Contao\CoreBundle\Controller\AbstractBackendController;
+use Contao\CoreBundle\Exception\AccessDeniedException;
+use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\CoreBundle\Security\ContaoCorePermissions;
+use Contao\System;
 use Doctrine\DBAL\Exception;
 use Markocupic\SacEventToolBundle\Config\EventMountainGuide;
 use Markocupic\SacEventToolBundle\Config\EventType;
@@ -24,11 +28,19 @@ use Markocupic\SacPilatusEventStats\Stats\_03EventSubscriptions;
 use Markocupic\SacPilatusEventStats\TimePeriod\TimePeriod;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[Route('/%contao.backend.route_prefix%/event_stats', name: self::class, defaults: ['_scope' => 'backend'])]
+#[Route('/%contao.backend.route_prefix%/sac_pilatus_event_stats', name: self::class, defaults: ['_scope' => 'backend'])]
 class EventStatsController extends AbstractBackendController
 {
+    public const BACKEND_MODULE_TYPE = 'sac_pilatus_event_stats';
+    public const BACKEND_MODULE_CATEGORY = 'sac_be_modules';
+
     public function __construct(
+        private readonly ContaoFramework $framework,
+        private readonly Security $security,
+        private readonly TranslatorInterface $translator,
         private readonly _01AdvertisedEvents $_01AdvertisedEvents,
         private readonly _02TourGuides $_02TourGuides,
         private readonly _03EventSubscriptions $_03EventSubscriptions,
@@ -40,8 +52,14 @@ class EventStatsController extends AbstractBackendController
      */
     public function __invoke(): Response
     {
+        $this->checkPermission();
+
+        $system = $this->framework->getAdapter(System::class);
+        $system->loadLanguageFile('modules');
+
         $currentYear = (int) date('Y', time());
 
+        // Create statistics for these time periods.
         $timePeriods = [
             new TimePeriod(strtotime(($currentYear - 2).'-01-01 00:00:00'), strtotime(($currentYear - 2).'-12-31 23:59:59')),
             new TimePeriod(strtotime(($currentYear - 1).'-01-01 00:00:00'), strtotime(($currentYear - 1).'-12-31 23:59:59')),
@@ -54,8 +72,9 @@ class EventStatsController extends AbstractBackendController
         return $this->render(
             '@MarkocupicSacPilatusEventStats/Backend/event_stats.html.twig',
             [
-                'headline' => 'SAC Pilatus Event Statistik',
+                'headline' => $this->translator->trans('MOD.'.self::BACKEND_MODULE_TYPE.'.0', [], 'contao_default'),
                 'time_periods' => $timePeriods,
+
                 // 01 advertised tours
                 '_01_advertised_tours__total' => $this->_01AdvertisedEvents->countEvents($timePeriods, $arrAcceptedReleaseLevels, EventType::TOUR),
                 '_01_advertised_tours__with_mountain_guide' => $this->_01AdvertisedEvents->countEventsByMountainGuideType($timePeriods, EventMountainGuide::WITH_MOUNTAIN_GUIDE, $arrAcceptedReleaseLevels, EventType::TOUR),
@@ -86,5 +105,18 @@ class EventStatsController extends AbstractBackendController
                 '_03_event_subscriptions__age_and_gender_distribution' => $this->_03EventSubscriptions->getEventSubscriptionsAgeAndGenderDistribution($timePeriods, [4]),
             ]
         );
+    }
+
+    private function checkPermission(): void
+    {
+        if ($this->security->isGranted('ROLE_ADMIN')) {
+            return;
+        }
+
+        if ($this->security->isGranted(ContaoCorePermissions::USER_CAN_ACCESS_MODULE, 'sac_pilatus_event_stats')) {
+            return;
+        }
+
+        throw new AccessDeniedException('Access denied');
     }
 }

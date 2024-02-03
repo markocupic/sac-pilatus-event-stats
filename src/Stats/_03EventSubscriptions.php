@@ -47,12 +47,12 @@ readonly class _03EventSubscriptions
             'gender_female' => [],
             'gender_male' => [],
             'gender_divers' => [],
-            'age_0-20' => [],
-            'age_21-30' => [],
-            'age_31-40' => [],
-            'age_41-60' => [],
-            'age_61-80' => [],
-            'age_81+' => [],
+            'age_0_20' => [],
+            'age_21_30' => [],
+            'age_31_40' => [],
+            'age_41_60' => [],
+            'age_61_80' => [],
+            'age_81_plus' => [],
             'age_undefined' => [],
         ];
 
@@ -126,17 +126,17 @@ readonly class _03EventSubscriptions
                 $age = $year - $yearOfBirth;
 
                 if ($age >= 81) {
-                    ++$data['age_81+'][$year];
+                    ++$data['age_81_plus'][$year];
                 } elseif ($age >= 61) {
-                    ++$data['age_61-80'][$year];
+                    ++$data['age_61_80'][$year];
                 } elseif ($age >= 41) {
-                    ++$data['age_41-60'][$year];
+                    ++$data['age_41_60'][$year];
                 } elseif ($age >= 31) {
-                    ++$data['age_31-40'][$year];
+                    ++$data['age_31_40'][$year];
                 } elseif ($age >= 21) {
-                    ++$data['age_21-30'][$year];
+                    ++$data['age_21_30'][$year];
                 } else {
-                    ++$data['age_0-20'][$year];
+                    ++$data['age_0_20'][$year];
                 }
             }
         }

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.1">
+  <file datatype="php" original="contao/languages/en/modules.php" source-language="en">
+    <body>
+      <trans-unit id="MOD.sac_pilatus_event_stats.0">
+        <source>SAC Pilatus Event Statistiken</source>
+      </trans-unit>
+      <trans-unit id="MOD.sac_pilatus_event_stats.1">
+        <source>SAC Pilatus Event Statistiken ansehen.</source>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

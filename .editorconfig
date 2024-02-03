@@ -1,4 +1,3 @@
-
 # EditorConfig is awesome: http://EditorConfig.org
 
 # top-most EditorConfig file
@@ -10,16 +9,16 @@ end_of_line = lf
 insert_final_newline = true
 trim_trailing_whitespace = true
 
-[*.{php,twig,yml,yaml}]
+[*.{php,twig,yaml}]
 indent_style = space
 indent_size = 4
 
-[*.{html5,svg,min.css,min.js}]
+[*.{min.css}]
 insert_final_newline = false
 
-[*/contao/**.{css,js,php},*/public/**.{css,js}]
+[*/contao/**.{php}]
 indent_style = tab
 
-[*/contao/**.html5]
+[*.{xlf}]
 indent_style = space
 indent_size = 2

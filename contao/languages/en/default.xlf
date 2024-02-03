@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.1">
+  <file datatype="php" original="contao/languages/en/default.php" source-language="en">
+    <body>
+      <trans-unit id="SAC_PILATUS_EVENT_STATS.total">
+        <source>Total</source>
+      </trans-unit>
+      <trans-unit id="SAC_PILATUS_EVENT_STATS.gender_female">
+        <source>Teiln. weiblich</source>
+      </trans-unit>
+      <trans-unit id="SAC_PILATUS_EVENT_STATS.gender_male">
+        <source>Teiln. männlich</source>
+      </trans-unit>
+      <trans-unit id="SAC_PILATUS_EVENT_STATS.gender_divers">
+        <source>Teiln. divers</source>
+      </trans-unit>
+      <trans-unit id="SAC_PILATUS_EVENT_STATS.age_0_20">
+        <source>Alter: 0-20</source>
+      </trans-unit>
+      <trans-unit id="SAC_PILATUS_EVENT_STATS.age_21_30">
+        <source>Alter: 21-30</source>
+      </trans-unit>
+      <trans-unit id="SAC_PILATUS_EVENT_STATS.age_31_40">
+        <source>Alter: 31-40</source>
+      </trans-unit>
+      <trans-unit id="SAC_PILATUS_EVENT_STATS.age_41_60">
+        <source>Alter: 41-60</source>
+      </trans-unit>
+      <trans-unit id="SAC_PILATUS_EVENT_STATS.age_61_80">
+        <source>Alter: 61-80</source>
+      </trans-unit>
+      <trans-unit id="SAC_PILATUS_EVENT_STATS.age_81_plus">
+        <source>Alter: 81+</source>
+      </trans-unit>
+      <trans-unit id="SAC_PILATUS_EVENT_STATS.age_undefined">
+        <source>Alter: unbekannt</source>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
