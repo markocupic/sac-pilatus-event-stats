@@ -20,11 +20,14 @@ use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Security\ContaoCorePermissions;
 use Contao\System;
 use Doctrine\DBAL\Exception;
+use Markocupic\SacEventToolBundle\Config\EventExecutionState;
 use Markocupic\SacEventToolBundle\Config\EventMountainGuide;
+use Markocupic\SacEventToolBundle\Config\EventState;
 use Markocupic\SacEventToolBundle\Config\EventType;
 use Markocupic\SacPilatusEventStats\Stats\_01AdvertisedEvents;
 use Markocupic\SacPilatusEventStats\Stats\_02TourGuides;
 use Markocupic\SacPilatusEventStats\Stats\_03EventSubscriptions;
+use Markocupic\SacPilatusEventStats\Stats\_04EventStatesAndExecutionStates;
 use Markocupic\SacPilatusEventStats\TimePeriod\TimePeriod;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -44,6 +47,7 @@ class EventStatsController extends AbstractBackendController
         private readonly _01AdvertisedEvents $_01AdvertisedEvents,
         private readonly _02TourGuides $_02TourGuides,
         private readonly _03EventSubscriptions $_03EventSubscriptions,
+        private readonly _04EventStatesAndExecutionStates $_04EventStatesAndExecutionStates,
     ) {
     }
 
@@ -103,6 +107,56 @@ class EventStatsController extends AbstractBackendController
 
                 // 03 event subscription gender and age distribution
                 '_03_event_subscriptions__age_and_gender_distribution' => $this->_03EventSubscriptions->getEventSubscriptionsAgeAndGenderDistribution($timePeriods, [4]),
+
+                /*
+                 * 04 event state cases
+                 *
+                 * Events stattgefunden [nur mit Tourrapport: executionState != "" AND eventState = ""]
+                 * SELECT COUNT(id) FROM tl_calendar_events t WHERE (t.startDate >= :dateLimitStart AND t.startDate <= :dateLimitEnd) AND (t.eventReleaseLevel IN (6, 7)) AND (t.executionState != "") AND (t.eventState = "") AND (t.eventType = :eventType)
+                 */
+                '_04_event_state__case_0' => $this->_04EventStatesAndExecutionStates->countEventsByExecutionStateAndEventState($timePeriods, $arrAcceptedReleaseLevels, EventType::TOUR, 't.executionState != ""', 't.eventState = ""', null),
+
+                /*
+                 *  Events ausgebucht [eventState = "Event ausgebucht"]
+                 *  SELECT COUNT(id) FROM tl_calendar_events t WHERE (t.startDate >= :dateLimitStart AND t.startDate <= :dateLimitEnd) AND (t.eventReleaseLevel IN (6, 7)) AND (t.eventState = "event_fully_booked") AND (t.eventType = :eventType)
+                 */
+                '_04_event_state__case_1' => $this->_04EventStatesAndExecutionStates->countEventsByExecutionStateAndEventState($timePeriods, $arrAcceptedReleaseLevels, EventType::TOUR, '', 't.eventState = "'.EventState::STATE_FULLY_BOOKED.'"', null),
+
+                /*
+                 *  Events verschoben [eventState = "Event verschoben"]
+                 *  SELECT COUNT(id) FROM tl_calendar_events t WHERE (t.startDate >= :dateLimitStart AND t.startDate <= :dateLimitEnd) AND (t.eventReleaseLevel IN (6, 7)) AND (t.eventState = "event_rescheduled") AND (t.eventType = :eventType)
+                 */
+                '_04_event_state__case_2' => $this->_04EventStatesAndExecutionStates->countEventsByExecutionStateAndEventState($timePeriods, $arrAcceptedReleaseLevels, EventType::TOUR, '', 't.eventState = "'.EventState::STATE_RESCHEDULED.'"', null),
+
+                /*
+                 *  Events abgesagt [eventState = "Event abgesagt"]
+                 *  SELECT COUNT(id) FROM tl_calendar_events t WHERE (t.startDate >= :dateLimitStart AND t.startDate <= :dateLimitEnd) AND (t.eventReleaseLevel IN (6, 7)) AND (t.eventState = "event_canceled") AND (t.eventType = :eventType)
+                 */
+                '_04_event_state__case_3' => $this->_04EventStatesAndExecutionStates->countEventsByExecutionStateAndEventState($timePeriods, $arrAcceptedReleaseLevels, EventType::TOUR, '', 't.eventState = "'.EventState::STATE_CANCELED.'"', null),
+
+                /*
+                 *  Unbekannt (kein Tourrapport vorhanden) [else-Fall : executionState = "" AND eventState = ""]
+                 *  SELECT COUNT(id) FROM tl_calendar_events t WHERE (t.startDate >= :dateLimitStart AND t.startDate <= :dateLimitEnd) AND (t.eventReleaseLevel IN (6, 7)) AND (t.executionState != "") AND (t.eventState = "") AND (t.eventType = :eventType)
+                 */
+                '_04_event_state__case_4' => $this->_04EventStatesAndExecutionStates->countEventsByExecutionStateAndEventState($timePeriods, $arrAcceptedReleaseLevels, EventType::TOUR, 't.executionState = ""', 't.eventState = ""', null),
+
+                /*
+                 * Event wie ausgeschrieben durchgeführt: Ja [t.executionState = "event_executed_like_predicted"]
+                 * SELECT COUNT(id) FROM tl_calendar_events t WHERE (t.startDate >= :dateLimitStart AND t.startDate <= :dateLimitEnd) AND (t.eventReleaseLevel IN (6, 7)) AND (t.executionState = "event_executed_like_predicted") AND (t.eventType = :eventType)
+                 */
+                '_04_event_state__case_5' => $this->_04EventStatesAndExecutionStates->countEventsByExecutionStateAndEventState($timePeriods, $arrAcceptedReleaseLevels, EventType::TOUR, 't.executionState = "'.EventExecutionState::STATE_EXECUTED_LIKE_PREDICTED.'"', '', null),
+
+                /*
+                 * Event wie ausgeschrieben durchgeführt: Nein [t.executionState = "event_not_executed_like_predicted"]
+                 * SELECT COUNT(id) FROM tl_calendar_events t WHERE (t.startDate >= :dateLimitStart AND t.startDate <= :dateLimitEnd) AND (t.eventReleaseLevel IN (6, 7)) AND (t.executionState = "event_not_executed_like_predicted") AND (t.eventType = :eventType)
+                 */
+                '_04_event_state__case_6' => $this->_04EventStatesAndExecutionStates->countEventsByExecutionStateAndEventState($timePeriods, $arrAcceptedReleaseLevels, EventType::TOUR, 't.executionState = "'.EventExecutionState::STATE_NOT_EXECUTED_LIKE_PREDICTED.'"', '', null),
+
+                /*
+                 * Event wie ausgeschrieben durchgeführt: Unbekannt (kein Tourrapport vorhanden) [t.executionState = ""]
+                 * SELECT COUNT(id) FROM tl_calendar_events t WHERE (t.startDate >= :dateLimitStart AND t.startDate <= :dateLimitEnd) AND (t.eventReleaseLevel IN (6, 7)) AND (t.executionState = "") AND (t.eventType = :eventType)
+                 */
+                '_04_event_state__case_7' => $this->_04EventStatesAndExecutionStates->countEventsByExecutionStateAndEventState($timePeriods, $arrAcceptedReleaseLevels, EventType::TOUR, 't.executionState = ""', '', 0),
             ]
         );
     }
