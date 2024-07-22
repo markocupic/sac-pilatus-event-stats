@@ -193,24 +193,30 @@
             </tr>
             <tr>
                 <td>Events stattgefunden [nur mit Tourrapport: executionState != "" AND eventState = ""]</td>
-                {% for data in _04_event_state__case_1 %}
+                {% for data in _04_event_state__case_0 %}
                     <td class="sac-pilatus-event-stat--data-table--data-cell">{{ data.getData() }}</td>
                 {% endfor %}
             </tr>
             <tr>
                 <td>Events ausgebucht [eventState = "Event ausgebucht"]</td>
-                {% for data in _04_event_state__case_2 %}
+                {% for data in _04_event_state__case_1 %}
                     <td class="sac-pilatus-event-stat--data-table--data-cell">{{ data.getData() }}</td>
                 {% endfor %}
             </tr>
             <tr>
                 <td>Events verschoben [eventState = "Event verschoben"]</td>
-                {% for data in _04_event_state__case_3 %}
+                {% for data in _04_event_state__case_2 %}
                     <td class="sac-pilatus-event-stat--data-table--data-cell">{{ data.getData() }}</td>
                 {% endfor %}
             </tr>
             <tr>
                 <td>Events abgesagt [eventState = "Event abgesagt"]</td>
+                {% for data in _04_event_state__case_3 %}
+                    <td class="sac-pilatus-event-stat--data-table--data-cell">{{ data.getData() }}</td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <td>Unbekannt (kein Tourrapport vorhanden) [else-Fall: executionState = "" AND eventState = ""]</td>
                 {% for data in _04_event_state__case_4 %}
                     <td class="sac-pilatus-event-stat--data-table--data-cell">{{ data.getData() }}</td>
                 {% endfor %}
