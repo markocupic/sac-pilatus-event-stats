@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Markocupic\SacPilatusEventStats\Stats;
 
-use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Types;
 use Markocupic\SacPilatusEventStats\Data\DataItem;
@@ -28,7 +27,7 @@ readonly class _04EventStatesAndExecutionStates
     ) {
     }
 
-    public function countEventsByExecutionStateAndEventState(array $timePeriods, array $arrAcceptedReleaseLevels, string|null $eventType = null, string $strEventExecutionStateFilter, string $strEventStateFilter = '', int|null $organizerId = null): array
+    public function countEventsByExecutionStateAndEventState(array $timePeriods, array $arrAcceptedReleaseLevels, string|null $eventType = null, string|null $strEventExecutionStateFilter = null, string|null $strEventStateFilter = null, int|null $organizerId = null): array
     {
         $data = [];
         $qb = $this->connection->createQueryBuilder();
@@ -45,16 +44,16 @@ readonly class _04EventStatesAndExecutionStates
                 ->where('t.startDate >= :dateLimitStart AND t.startDate <= :dateLimitEnd')
                 ->setParameter('dateLimitStart', $timePeriod->getStartTime(), Types::INTEGER)
                 ->setParameter('dateLimitEnd', $timePeriod->getEndTime(), Types::INTEGER)
-                ->andWhere($qb->expr()->in('t.eventReleaseLevel', $arrAcceptedReleaseLevelIds, ArrayParameterType::INTEGER))
+                ->andWhere($qb->expr()->in('t.eventReleaseLevel', $arrAcceptedReleaseLevelIds))
             ;
 
             // execution state filter
-            if (\strlen($strEventExecutionStateFilter)) {
+            if (\is_string($strEventExecutionStateFilter) && \strlen($strEventExecutionStateFilter)) {
                 $qb->andWhere($strEventExecutionStateFilter);
             }
 
             // event state filter
-            if (\strlen($strEventStateFilter)) {
+            if (\is_string($strEventStateFilter) && \strlen($strEventStateFilter)) {
                 $qb->andWhere($strEventStateFilter);
             }
 
