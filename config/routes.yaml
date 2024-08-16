@@ -1,4 +1,4 @@
 # config/routes.yaml
 markocupic_sac_pilatus_event_stats.controller:
     resource: ../src/Controller
-    type: annotation
+    type: attribute
