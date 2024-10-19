@@ -19,7 +19,7 @@ use Contao\StringUtil;
 use Contao\UserModel;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
-use Markocupic\SacEventToolBundle\CalendarEventsHelper;
+use Markocupic\SacEventToolBundle\Util\CalendarEventsUtil;
 use Markocupic\SacEventToolBundle\Config\EventType;
 use Markocupic\SacEventToolBundle\Config\TourguideQualification;
 use Markocupic\SacPilatusEventStats\Data\DataItem;
@@ -74,9 +74,9 @@ readonly class _02TourGuides
                 $event = CalendarEventsModel::findByPk($eventId);
 
                 if (null === $isMountainGuide) {
-                    $arrInstructorIds = array_merge($arrInstructorIds, CalendarEventsHelper::getInstructorsAsArray($event, false));
+                    $arrInstructorIds = array_merge($arrInstructorIds, CalendarEventsUtil::getInstructorsAsArray($event, false));
                 } else {
-                    $arrIds = CalendarEventsHelper::getInstructorsAsArray($event, false);
+                    $arrIds = CalendarEventsUtil::getInstructorsAsArray($event, false);
 
                     foreach ($arrIds as $userId) {
                         if (null !== ($user = UserModel::findByPk($userId))) {
