@@ -29,6 +29,7 @@ use Markocupic\SacPilatusEventStats\Util\EventReleaseLevelUtil;
 readonly class _02TourGuides
 {
     public function __construct(
+        private CalendarEventsUtil $calendarEventsUtil,
         private Connection $connection,
         private EventReleaseLevelUtil $eventReleaseLevelUtil,
     ) {
@@ -74,9 +75,9 @@ readonly class _02TourGuides
                 $event = CalendarEventsModel::findByPk($eventId);
 
                 if (null === $isMountainGuide) {
-                    $arrInstructorIds = array_merge($arrInstructorIds, CalendarEventsUtil::getInstructorsAsArray($event, ['includeDisabled' => true]));
+                    $arrInstructorIds = array_merge($arrInstructorIds, $this->calendarEventsUtil->getInstructorsAsArray($event, ['includeDisabled' => true]));
                 } else {
-                    $arrIds = CalendarEventsUtil::getInstructorsAsArray($event, ['includeDisabled' => true]);
+                    $arrIds = $this->calendarEventsUtil->getInstructorsAsArray($event, ['includeDisabled' => true]);
 
                     foreach ($arrIds as $userId) {
                         if (null !== ($user = UserModel::findByPk($userId))) {
