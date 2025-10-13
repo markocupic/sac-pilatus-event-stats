@@ -29,9 +29,9 @@ use Markocupic\SacPilatusEventStats\Stats\_02TourGuides;
 use Markocupic\SacPilatusEventStats\Stats\_03EventSubscriptions;
 use Markocupic\SacPilatusEventStats\Stats\_04EventStatesAndExecutionStates;
 use Markocupic\SacPilatusEventStats\TimePeriod\TimePeriod;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Security;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/%contao.backend.route_prefix%/sac_pilatus_event_stats', name: self::class, defaults: ['_scope' => 'backend'])]
