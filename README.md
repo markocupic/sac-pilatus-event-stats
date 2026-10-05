@@ -2,6 +2,8 @@
 
 # Welcome to SAC Pilatus Event Statistics
 
+## Nur noch Read-Only und seit 05.10.2026 Bestandteil des SAC Event Tool
+
 This bundle is still under construction.
 
 Im Backend eine **Event-, Leiter- und Teilnehmer-Statistik als Übersicht** einführen.
